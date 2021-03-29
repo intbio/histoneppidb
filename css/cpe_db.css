@@ -1,0 +1,44 @@
+
+td.details-control {
+	width: 30px;
+    height: 30px;
+    background: url('../images/plus.png') no-repeat center center;
+	background-size: 30px;
+    cursor: pointer;
+}
+tr.shown td.details-control {
+	width: 30px;
+    height: 30px;
+    background: url('../images/minus.png') no-repeat center center;
+	background-size: 30px;
+}
+
+
+.tooltip-inner{
+
+    padding:1px 1px;
+    background-color:#EEEEEE;
+    text-align:center;
+    text-decoration:none;
+
+    border-radius:5px
+}
+
+.tooltip.bottom .tooltip-arrow{
+	border-bottom-color:#EEEEEE;
+}
+
+.dt-button-collection{
+	display: block;
+    height: 0px !important;
+	width: 0px !important;
+	padding:0px 0px !important;
+    overflow-y: scroll !important;
+}
+.dtsb-searchBuilder{
+	width: 80vw !important;
+	position: absolute;
+	padding: 5px 5px !important;
+    top: -300px !important;
+    left: 0;
+}

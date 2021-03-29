@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	
+	
+	
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Histone PPI DB</title>
+    <meta name="author" content="Anna Gribkova">
+    <meta content="Histone Protein Protin Interactions Database" />
+	<link rel="shortcut icon" href="/cpedb/images/favicon.ico">
+    <!-- Bootstrap core CSS -->
+	
+	<link rel="stylesheet" type="text/css" href="DataTables/Bootstrap-3.3.7/css/bootstrap.min.css"/>	
+	<link rel="stylesheet" type="text/css" href="DataTables/datatables.min.css"/> 
+	<link rel="stylesheet" type="text/css" href="DataTables/SearchBuilder-1.0.0/css/searchBuilder.dataTables.min.css"/>
+	<link rel="stylesheet" type="text/css" href="DataTables/Buttons-1.6.5/css/buttons.dataTables.min.css"/> 
+	
+
+	<link rel="stylesheet" type="text/css" href="css/cpe_db.css"/>
+
+
+
+       
+	
+  </head>
+
+  <body>
+
+
+
+	<table class="table" cellpadding="50" cellspacing="0" border="0" style="padding-left:50pxl;text-align: center;width: 100pxl;">
+        <tr>
+            <td><img style="max-height: 150px;" src="images/logo.svg"></td>
+            <td>
+				<h3>Histone Protein Protein Interactions Database</h3>
+				<h3>Description</h3>
+						A database that collects publicly available datasets of experimental and predicted evidence about histone – non-histone
+interactions from STRING, BioGRID, and IntAct. In DB are used both updated and previous
+HGNC symbols for all human histone genes. Protein-protein interactions are aggregated for
+histone variants. Also, DB contains a designed functional hierarchical classification for
+chromatin proteins and PDB ID to the related structures.
+This database contributes to revealing of a complex network of interactions between
+nucleosomes and chromatin proteins, many of which are specific to the histone
+composition of the nucleosome.
+
+			
+				<h3>Releases:</h3>
+March 2021: HistonePPI DB version 1 (String v11, BioGRID v4.3., IntAct v 4.2.16??)
+
+				<h3>Please cite Histone PPI DB:</h3>
+Gribkova A. K., Shaytan A. K. Construction and analysis of an interactome between
+nucleosomes and chromatin proteins // FEBS open bio. — 2019. — Vol. 9, no.
+sup1. — P. 393–393.
+			</td>
+
+		</tr>
+    </table>
+<div class="row">
+  <div class="col-md-5">
+
+		<h3>Histone PPI DB Statistics:</h3>
+<!-- 		<h3>Contributors:</h3>
+		  <ul>
+			  <li>Anna Gribkova — Compilation of data for the database, developer</li>
+			  <li>Grigoriy Armeev — Technical Management</li>
+		  </ul> -->
+  </div>
+</div>
+      
+
+      
+      
+    <div id='table-container'></div>
+	<table id="histoneppitable" class="table table-striped table-bordered"  style="width:100%">
+        <thead>
+            <tr>
+            	<th></th>
+				<th>Histone variant</th>
+				<th>Previous HGNC Symbol</th>
+				<th>Interactor gene</th>
+				<th>Interactor category</th>
+				<th>PDBID</th>
+				<th>BioGRID count</th>
+				<th>String count</th>
+				<th>IntAct count</th>
+            </tr>
+        </thead>
+		<tfoot>
+            <tr>
+            	<th></th>
+				<th>Histone variant</th>
+				<th>Previous HGNC Symbol</th>
+				<th>Interactor gene</th>
+				<th>Interactor category</th>
+				<th>PDBID</th>
+				<th>BioGRID count</th>
+				<th>String count</th>
+				<th>IntAct count</th>>
+            </tr>
+        </tfoot>
+    </table>
+    <div id="tooltip"></div>
+    </div><!-- /.container -->
+
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    
+ 
+	<script type="text/javascript" src="DataTables/jQuery-3.3.1/jquery-3.3.1.min.js"></script>
+	<script type="text/javascript" src="DataTables/Bootstrap-3.3.7/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="DataTables/datatables.min.js"></script>
+	<!-- <script type="text/javascript" src="DataTables/SearchBuilder-1.0.0/js/datatables.searchBuilder.min.js"></script> -->
+	<script type="text/javascript" src="DataTables/Buttons-1.6.5/js/dataTables.buttons.min.js"></script>
+	<script type="text/javascript" src="js/smiles-drawer.min.js"></script>
+	
+
+    <script type="text/javascript">
+	
+	const copyToClipboard = str => {
+	  const el = document.createElement('textarea');
+	  el.value = str;
+	  document.body.appendChild(el);
+	  el.select();
+	  document.execCommand('copy');
+	  document.body.removeChild(el);
+	};
+	
+	function format ( d ) {
+    // `d` is the original data object for the row
+
+	var genes = d['Previous HGNC Symbol'].split(',')
+	var string = d['String count'].split(',')
+	var biogrid = d['BioGRID count'].split(',')
+	var intact = d['IntAct count'].split(',')
+	
+
+	var new_table ='<table class="table table-striped table-bordered" cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
+	     '<tr>'+ 
+            '<td><b>Histone genes</b></td>'+
+            '<td><b>String count</b></td>'+
+            '<td><b>BioGRID count</b></td>'+
+            '<td><b>IntACt count</b></td>'+
+        '</tr>'
+	for (let i = 0; i < genes.length; i++) {
+		new_table+="<tr> ";
+    	new_table+='<td>'+ genes[i] + '</td>';
+    	new_table+='<td>'+ string[i] + '</td>';
+    	new_table+='<td>'+ biogrid[i] + '</td>';
+    	new_table+='<td>'+ intact[i] + '</td>';
+    	new_table+= "</tr>"
+    }
+    new_table+= "</table>"
+
+
+
+		
+    return new_table
+}
+	let popup = new SmilesDrawer.Drawer({ width: 200, height: 200 });
+	$(document).ready(function() {
+	
+	
+    var table =$('#histoneppitable').DataTable( {
+        "ajax": "data/db.json",
+        "columns": [
+			{
+				className:      'details-control',
+				orderable:      false,
+				data:           null,
+				defaultContent: ''
+			},
+			{ "data": "Histone variant" },
+			{ "data": "Previous HGNC Symbol" },
+			{ "data": "Interactor gene" },
+			{ "data": "Interactor category" },
+			{ "data": "PDBID" },
+			{ "data": "BioGRID count" },
+			{ "data": "String count" },
+			{ "data": "IntAct count" },
+        ],
+		"aaSorting": [],
+		"rowReorder": true,
+		"paging": true,
+		"initComplete": function(settings, json) {
+			$('[data-toggle="tooltip"]').tooltip({
+			  class: "tooltip-main",
+			  animation: true,
+			  html: true,
+			  delay: {show: 10, hide: 10},
+			})
+			$('[data-toggle="tooltip"]').on('shown.bs.tooltip', function () {
+			    console.log(this.getAttribute('smiles'));
+				var smiles=this.getAttribute('smiles');
+				var id='tooltip_canvas_'+this.getAttribute('row');
+				SmilesDrawer.parse(smiles, function (tree) {
+					popup.draw(tree, id, 'light', false);
+				}, function (err) {
+					console.log(err);
+				})
+			})
+
+		},
+		"columnDefs": [ { "targets": '_all', "defaultContent": ""},
+						{ orderable: true, className: 'reorder', targets: [1,2,3,5] },
+						{ orderable: false, targets: '_all' },
+						
+						{
+							targets: 5,
+							render: function (data, type, row, meta)
+							{
+								if (type === 'display')
+									if (data===null){
+										return ''
+									}
+									data = "<a href='https://www.rcsb.org/structure/" + data  + "' target='_blank'>" + data + "</a>";
+								return data;
+							}
+						},
+						{
+							targets: [6],
+							render: function (data, type, row, meta)
+							{
+								if (type === 'display')
+									if (!data){
+										return ''
+									
+
+									var count_sum = data.split(',').reduce(function(a, b){
+															return parseInt(a) + parseInt(b);
+															}, 0);
+	
+									data = count_sum;
+								return data;
+								}
+								else {
+									return ''
+								}
+							}
+						},
+						
+
+
+						{
+							"targets": [2],
+							"visible": false,
+							"searchable": true
+						}
+					],
+				//dom: 'Blfr<"toolbar">itp',
+				dom: 'Blfritp',
+				language: {
+					searchBuilder: {
+						button: 'Advanced Search (%d conditions)',
+						title: 'Advanced Search'
+					}
+				},
+				buttons: [
+					'copy', 'csv',
+					{
+						extend: 'searchBuilder',
+						config: {
+						
+							columns: [1,2,3,4]
+						}
+					}
+				],
+				
+				
+
+					
+    
+	} );
+
+
+	
+	// $("div.toolbar").html('<div>Search by tag:</div>'+
+	// 						'<div class="btn-group btn-group-xs" id="tag_group">'+
+							
+	// 						  '<label class="btn btn-info buttons-copy buttons-html5">'+
+	// 							'<input type="checkbox" name="amide" id="tag1" autocomplete="off"> Amide'+
+	// 						  '</label>'+
+							  
+	// 						  '<label class="btn btn-info buttons-copy buttons-html5">'+
+	// 							'<input type="checkbox" name="amine" id="tag2" autocomplete="off"> Amine'+
+	// 						  '</label>'+
+							  
+	// 						  '<label class="btn btn-info buttons-copy buttons-html5">'+
+	// 							'<input type="checkbox" name="alkyl-amine" id="tag3" autocomplete="off" > Alkyl-amine'+
+	// 						  '</label>'+
+							  
+	// 						  '<label class="btn btn-info buttons-copy buttons-html5">'+
+	// 							'<input type="checkbox" name="aromatic amine" id="tag4" autocomplete="off" > Aromatic amine'+
+	// 						  '</label>'+
+							  
+	// 						  '<label class="btn btn-info buttons-copy buttons-html5">'+
+	// 							'<input type="checkbox" name="aromatic nitrogen" id="tag5" autocomplete="off"> Aromatic nitrogen'+
+	// 						  '</label>'+
+							  
+	// 						  '<label class="btn btn-info buttons-copy buttons-html5">'+
+	// 							'<input type="checkbox" name="basic nitrogen" id="tag6" autocomplete="off"> Basic nitrogen'+
+	// 						  '</label>'+
+							  
+	// 						  '<label class="btn btn-info buttons-copy buttons-html5">'+
+	// 							'<input type="checkbox" name="acidic oxygen" id="tag7" autocomplete="off"> Acidic oxygen'+
+	// 						  '</label>'+
+	// 						'</div>');
+							
+
+	
+
+
+
+	$('#histoneppitable tbody').on('click', 'td.details-control', function () {
+        var tr = $(this).closest('tr');
+        var row = table.row( tr );
+ 
+        if ( row.child.isShown() ) {
+            // This row is already open - close it
+            row.child.hide();
+            tr.removeClass('shown');
+        }
+        else {
+            // Open this row
+            row.child( format(row.data()) ).show();
+			SmilesDrawer.apply({
+								width: 300,
+								height: 200,}
+							  );
+            tr.addClass('shown');
+        }
+    } );
+	
+	
+	$('input:checkbox').change( function() {
+        table.draw();
+    } );
+	
+} );
+
+// $.fn.dataTable.ext.search.push(
+//     function( settings, data, dataIndex ) {
+//         var tag1 =  data[21]  ;
+// 		var tag2 =  data[22]  ;
+// 		var tag3 =  data[23]  ;
+// 		var tag4 =  data[24]  ;
+// 		var tag5 =  data[25]  ;
+// 		var tag6 =  data[26]  ;
+// 		var tag7 =  data[27]  ;
+// 		var tag1_state=$('#tag1')[0].checked ;
+// 		var tag2_state=$('#tag2')[0].checked;
+// 		var tag3_state=$('#tag3')[0].checked;
+// 		var tag4_state=$('#tag4')[0].checked;
+// 		var tag5_state=$('#tag5')[0].checked;
+// 		var tag6_state=$('#tag6')[0].checked;
+// 		var tag7_state=$('#tag7')[0].checked;
+//         if (  (((tag1!='') & tag1_state ) == tag1_state) &
+// 			  (((tag2!='') & tag2_state ) == tag2_state) &
+// 			  (((tag3!='') & tag3_state ) == tag3_state) &
+// 			  (((tag4!='') & tag4_state ) == tag4_state) &
+// 			  (((tag5!='') & tag5_state ) == tag5_state) &
+// 			  (((tag6!='') & tag6_state ) == tag6_state) &
+// 			  (((tag7!='') & tag7_state ) == tag7_state))
+//         {	
+			
+//             return true;
+//         }
+//         return false;
+//     }
+// );
+
+
+	
+    </script>
+  </body>
+</html>
