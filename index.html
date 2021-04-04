@@ -294,6 +294,7 @@ sup1. — P. 393–393.
 												{
 							targets: 1,
 							render: function (data, type, row, meta)
+								hist_variant = row['Histone variant'].replace(/ /g, '_')
 							        var variants_dict = {'cenH3_CENPA': 'cenH3',
                              						'TS_H2A.1': 'H2A.1',
                              						'TS_H2B.1': 'H2B.1',
@@ -312,13 +313,14 @@ sup1. — P. 393–393.
 									     'H3.Y.2': 'H3.Y',
 									     'macroH2A.1': 'macroH2A',
 									     'macroH2A.2': 'macroH2A'}
+								
 								var varints_l = ['H1.1', 'H1.2', 'H1.3', 'H1.4', 'H1.5', 'H10', 'H2.1', 'H2.2', 'H2A.2', 'H2A.J','H2B.M', 'H2B.S']
 							{
 								if (type === 'display')
-									if (row['Histone variant'] in variants_dict ===true) or (row['Histone variant'] in varints_l ===true) {
-									data = "<a href='https://histonedb.bioeng.ru/type/" + row['Histone type']  +"/variant/"+variants_dict[row['Histone variant']]+"/#msa_div_browse" +"' target='_blank'>" + row['Histone variant'] + "</a>";
+									if (hist_variant in variants_dict ===true) or (hist_variant in varints_l ===true) {
+									data = "<a href='https://histonedb.bioeng.ru/type/" + row['Histone type']  +"/variant/"+variants_dict[hist_variant]+"/#msa_div_browse" +"' target='_blank'>" + row['Histone variant'] + "</a>";
 												}else{
-			       						data = row['Histone variant'] }
+			       						data = hist_variant }
 								return data;
 							}
 						},
