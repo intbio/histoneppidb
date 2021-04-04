@@ -311,7 +311,7 @@ sup1. — P. 393–393.
 									     'macroH2A.2': 'macroH2A'}
 									if hist_variant in variants_dict === true{
 										hist_variant = variants_dict[hist_variant]
-									}
+									}else{hist_variant = hist_variant}
 									var varints_l = ['H2A.1','H2B.1','H2A.Z','H3.Y','macroH2A','cenH3', 'H1.0', 'TS_H1.7', 'OO_H1.8','H1.10',  'H2A.X', 'H3.3', 'H3.5', 'TS_H1.6','H2A.P']
 									if (hist_variant in varints_l ===true) {
 									data = "<a href='https://histonedb.bioeng.ru/type/" + row['Histone type']  +"/variant/"+variants_dict[hist_variant]+"/#msa_div_browse" +"' target='_blank'>" + row['Histone variant'] + "</a>";
